@@ -1,27 +1,42 @@
 from flask import Flask, render_template, request
 import gspread
 from google.oauth2.service_account import Credentials
+import os
 import traceback
 
 app = Flask(__name__)
 
-# ملف الـ Service Account اللي نزلته (اسمه credentials.json)
-SERVICE_ACCOUNT_FILE = "credentials.json"
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets","https://www.googleapis.com/auth/drive"]
+# Google Sheets باستخدام Environment Variables
+SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
 
-# تهيئة Google Sheets (مع طباعة خطأ واضح لو فشل)
 try:
-    creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    creds_info = {
+        "type": os.environ.get("GOOGLE_TYPE"),
+        "project_id": os.environ.get("GOOGLE_PROJECT_ID"),
+        "private_key_id": os.environ.get("GOOGLE_PRIVATE_KEY_ID"),  # لو موجود
+        "private_key": os.environ.get("GOOGLE_PRIVATE_KEY").replace('\\n', '\n'),
+        "client_email": os.environ.get("GOOGLE_CLIENT_EMAIL"),
+        "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": os.environ.get("GOOGLE_CLIENT_X509_CERT_URL")
+    }
+
+    creds = Credentials.from_service_account_info(creds_info, scopes=SCOPES)
     gc = gspread.authorize(creds)
-    SPREADSHEET_NAME = "Job Applications"   # اسم الشيت بالضبط
+    SPREADSHEET_NAME = "Job Applications"
     sheet = gc.open(SPREADSHEET_NAME).sheet1
-    print("✅ Google Sheets: جاهز للكتابة في", SPREADSHEET_NAME)
+    print("✅ Google Sheets جاهز للكتابة في", SPREADSHEET_NAME)
 except Exception as e:
-    print("❌ خطأ أثناء تهيئة Google Sheets (Credentials أو فتح الشيت):")
+    print("❌ خطأ أثناء تهيئة Google Sheets:")
     traceback.print_exc()
     sheet = None
 
-# بيانات الوظائف والمدن (مثل ما عندك)
+# بيانات الوظائف والمدن
 jobs_list = ["مندوب مبيعات","مروج","عامل مخزن","كاش فان"]
 cities_list = [
     "رام الله والبيرة","القدس","الخليل","بيت لحم",
@@ -48,7 +63,6 @@ def index():
             request.form.get('references')
         ]
 
-        # إذا sheet معرف (تمت تهيئته)، نضيف السطر؛ وإلا نطبع خطأ
         if sheet:
             try:
                 sheet.append_row(form_data)
@@ -63,4 +77,5 @@ def index():
     return render_template('jobs_formm.html', submitted=submitted, jobs=jobs_list, cities=cities_list)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # host و port مضبوطين للـ Render
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)

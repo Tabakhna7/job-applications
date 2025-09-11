@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>نموذج تقديم طلب - عالم الشوكولاته والحلويات</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v={{ version }}">
+</head>
+<body>
+    <div class="form-container">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+
+        {% if form_submitted %}
+            <div class="popup">
+                <div class="popup-content">
+                    <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="max-width:80px; margin-bottom:10px;">
+                    <h2>{{ message }}</h2>
+                </div>
+            </div>
+        {% else %}
+            <h1>نموذج تقديم طلب</h1>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <form method="POST" id="multiStepForm">
+                <!-- Step 1 -->
+                <div class="form-step active">
+                    <label>الاسم الكامل</label>
+                    <input type="text" name="name" required>
+
+                    <label>العمر</label>
+                    <input type="number" name="age" required>
+
+                    <label>رقم الجوال</label>
+                    <input type="text" name="phone" required>
+
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" name="email" required>
+
+                    <button type="button" class="next-btn">التالي</button>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="form-step">
+                    <label>الوظيفة المطلوبة</label>
+                    <select name="job" required>
+                        <option value="">اختر الوظيفة</option>
+                        <option>مندوب مبيعات</option>
+                        <option>كاش فان</option>
+                        <option>أمين مستودع</option>
+                        <option>سائق</option>
+                        <option>محاسبة</option>
+                        <option>عامل مخزن</option>
+                    </select>
+
+                    <label>المدرسة</label>
+                    <input type="text" name="school" required>
+
+                    <label>الجامعة</label>
+                    <input type="text" name="university" required>
+
+                    <label>التخصص</label>
+                    <input type="text" name="major" required>
+
+                    <label>المدينة</label>
+                    <select name="city" required>
+                        <option value="">اختر المدينة</option>
+                        <option>رام الله</option>
+                        <option>الخليل</option>
+                        <option>بيت لحم</option>
+                        <option>نابلس</option>
+                        <option>جنين</option>
+                        <option>طولكرم</option>
+                    </select>
+
+                    <label>عنوان السكن</label>
+                    <input type="text" name="address" required>
+                    <button type="button" class="next-btn">التالي</button>
+                    <button type="button" class="prev-btn">السابق</button>
+                  
+                </div>
+
+                <!-- Step 3 -->
+                <div class="form-step">
+                    <label>الخبرات السابقة</label>
+                    <textarea name="experience" rows="3" required></textarea>
+
+                    <label>المعرفون</label>
+                    <textarea name="references" rows="2"></textarea>
+                    <button type="submit">إرسال</button>
+                    <button type="button" class="prev-btn">السابق</button>
+                  
+                </div>
+            </form>
+        {% endif %}
+    </div>
+
+<script>
+const form = document.getElementById('multiStepForm');
+const nextBtns = document.querySelectorAll('.next-btn');
+const prevBtns = document.querySelectorAll('.prev-btn');
+const formSteps = document.querySelectorAll('.form-step');
+const progress = document.querySelector('.progress');
+
+let currentStep = 0;
+
+function updateProgress() {
+    progress.style.width = ((currentStep+1)/formSteps.length)*100 + '%';
+}
+
+nextBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        if(validateStep(formSteps[currentStep])){
+            formSteps[currentStep].classList.remove('active');
+            currentStep++;
+            formSteps[currentStep].classList.add('active');
+            updateProgress();
+        }
+    });
+});
+
+prevBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        formSteps[currentStep].classList.remove('active');
+        currentStep--;
+        formSteps[currentStep].classList.add('active');
+        updateProgress();
+    });
+});
+
+function validateStep(step){
+    const inputs = step.querySelectorAll('input, select, textarea');
+    for(let input of inputs){
+        if(input.hasAttribute('required') && !input.value){
+            input.focus();
+            return false;
+        }
+    }
+    return true;
+}
+
+updateProgress();
+</script>
+</body>
+</html>

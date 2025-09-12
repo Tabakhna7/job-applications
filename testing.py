@@ -1,30 +1,21 @@
 from flask import Flask, render_template, request
 import gspread
 from google.oauth2.service_account import Credentials
-import os
+import json
 import traceback
-
+import os
 app = Flask(__name__)
 
-# Google Sheets باستخدام Environment Variables
+# Google Sheets باستخدام ملف JSON مباشرة
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
 
 try:
-    creds_info = {
-        "type": os.environ.get("GOOGLE_TYPE"),
-        "project_id": os.environ.get("GOOGLE_PROJECT_ID"),
-        "private_key_id": os.environ.get("GOOGLE_PRIVATE_KEY_ID"),  # لو موجود
-        "private_key": os.environ.get("GOOGLE_PRIVATE_KEY").replace('\\n', '\n'),
-        "client_email": os.environ.get("GOOGLE_CLIENT_EMAIL"),
-        "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token",
-        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_x509_cert_url": os.environ.get("GOOGLE_CLIENT_X509_CERT_URL")
-    }
+    # قراءة ملف credentials.json
+    with open("credentials.json", "r") as f:
+        creds_info = json.load(f)
 
     creds = Credentials.from_service_account_info(creds_info, scopes=SCOPES)
     gc = gspread.authorize(creds)
@@ -77,5 +68,4 @@ def index():
     return render_template('jobs_formm.html', submitted=submitted, jobs=jobs_list, cities=cities_list)
 
 if __name__ == '__main__':
-    # host و port مضبوطين للـ Render
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)

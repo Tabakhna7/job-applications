@@ -1,143 +1,194 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to right, #4b3b2f, #d4af37); /* بني داكن + ذهبي */
+    font-family: "Tajawal", sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #3e2c20, #a67c00, #ffd700);
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    direction: rtl;
-    text-align: right;
+    height: 100vh;
+}
+
+/* Loading Screen */
+#loadingScreen {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction: column;
+    z-index: 9999;
+}
+
+#loadingScreen .loading-img {
+    width: 120px;
+    margin-bottom: 15px;
+    animation: rotate 1.5s linear infinite;
+}
+
+#loadingScreen p {
+    font-size: 18px;
+    color: #223f65;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(-20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.fade-in {
+    animation: fadeIn 0.8s ease forwards;
 }
 
 .form-container {
-    background: #fff5f0;
-    padding: 30px 40px;
+    background: #fff;
+    padding: 25px;
     border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    width: 400px;
-}
-
-.logo {
-    display: block;
-    margin: 0 auto 15px;
-    max-width: 120px;
-}
-
-h1 {
+    width: 420px;
+    max-width: 95%;
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.2);
     text-align: center;
-    color: #6b3b1e;
-    margin-bottom: 20px;
 }
 
-label {
-    display: block;
-    margin-top: 15px;
+/* العنوان */
+.form-title {
+    font-family: "Cairo", sans-serif;
+    font-size: 30px;
     font-weight: bold;
+    background: linear-gradient(135deg, #223f65, #1657b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    margin-bottom: 10px;
 }
 
-input, select, textarea {
+.form-title::after {
+    content: "";
+    display: block;
+    width: 100px;
+    height: 4px;
+    margin: 10px auto 0;
+    background: linear-gradient(135deg, #223f65, #ffd700);
+    border-radius: 2px;
+}
+
+.logo, .logo-success {
+    width: 120px;
+    margin-bottom: 15px;
+}
+
+.progressbar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.progressbar::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 4px;
     width: 100%;
-    padding: 10px;
-    margin-top: 8px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    font-size: 15px;
-    text-align: right;
-}
-
-input:focus, select:focus, textarea:focus {
-    border-color: #d4af37;
-    box-shadow: 0 0 8px rgba(212,175,55,0.5);
-    outline: none;
-}
-
-textarea { resize: vertical; }
-
-button {
-    margin-top: 20px;
-    width: 100%;
-    padding: 12px;
-    background-color: #8c6e4a; /* لون فخم متناسق مع الذهبي */
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
-}
-
-button:hover {
-    background-color: #a6845c;
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.progress-bar {
-    background: #ddd;
-    border-radius:10px;
-    height:8px;
-    width:100%;
-    margin-bottom:20px;
+    background: #dcdcdc;
+    transform: translateY(-50%);
+    z-index: -1;
 }
 
 .progress {
-    background:#d4af37;
-    height:100%;
-    width:0%;
-    border-radius:10px;
-    transition: width 0.3s;
+    display: none;
 }
 
-.form-step { display:none; }
-.form-step.active { display:block; }
-
-.popup {
-    position: fixed;
-    top: 0; left:0;
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.5);
-    display:flex; justify-content:center; align-items:center;
-    animation: fadeIn 0.4s;
-}
-.popup-content {
-    background:#fff;
-    padding:25px 40px;
-    border-radius:15px;
-    text-align:center;
-    box-shadow:0 10px 30px rgba(0,0,0,0.3);
-    animation: scaleIn 0.3s;
-    max-width:90%;
-}
-.popup-content h2 { color:green; }
-.close-btn {
-    position:absolute;
-    top:15px; right:20px;
-    font-size:22px;
-    cursor:pointer;
-    color:#333;
+.progress-step {
+    width: 32px;
+    height: 32px;
+    background: #dcdcdc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #555;
+    z-index: 1;
 }
 
-@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
-@keyframes scaleIn { from{transform:scale(0.8); opacity:0;} to{transform:scale(1); opacity:1;} }
+.progress-step.active {
+    background: linear-gradient(135deg, #223f65, #493a0c);
+    color: #fff;
+}
 
-@media(max-width:600px){
-    body {
-        background: #fff !important;
-        display: block;
-        padding: 0;
-    }
+.form-step { display: none; }
+.form-step.active { display: block; }
 
+input, textarea, select {
+    width: 90%;
+    padding: 12px;
+    margin: 10px auto;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: right;
+}
+
+select { text-align-last: right; }
+
+.btn {
+    background: linear-gradient(135deg, #a67c00, #99801a);
+    border: none;
+    color: #fff;
+    padding: 12px 20px;
+    margin: 10px 5px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: linear-gradient(135deg, #223f65, #493a0c);
+}
+
+.success-popup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: green;
+}
+
+input::placeholder,
+textarea::placeholder {
+    text-align: right;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    body { background: #fff; margin:0; padding:0; height:100vh; }
     .form-container {
-        width: 100% !important;
-        min-height: 100vh;
-        margin: 0;
-        padding: 20px;
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
         border-radius: 0;
         box-shadow: none;
+        padding: 20px;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
-
-    input, select, textarea, button { font-size: 16px; margin-top: 12px; }
-    h1{ font-size: 22px; }
+    .form-title { font-size: 26px; }
+    .logo { margin-bottom: 10px; }
 }

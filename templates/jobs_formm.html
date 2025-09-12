@@ -7,68 +7,86 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="form-container">
-        <!-- العنوان + الشعار -->
-        <h1 class="form-title">طلب توظيف - فوكس فلسطين</h1>
-        <img src="{{ url_for('static', filename='logo.png') }}" alt="شعار الشركة" class="logo">
 
-        {% if submitted == 'true' %}
-        <div class="success-popup">
-            <!-- <img src="{{ url_for('static', filename='logo.png') }}" class="logo-success"> -->
-            <h2>✅ تم إرسال طلبك بنجاح!</h2>
-        </div>
-        {% else %}
-        <form id="multiStepForm" method="POST">
-            <div class="progressbar">
-                <div class="progress" id="progress"></div>
-                <div class="progress-step active" data-title="1">1</div>
-                <div class="progress-step" data-title="2">2</div>
-                <div class="progress-step" data-title="3">3</div>
-            </div>
+<!-- Loading Page -->
+<div id="loadingScreen">
+    <img src="{{ url_for('static', filename='fox.jpg') }}" class="loading-img">
+    <p>...Loading</p>
+</div>
 
-            <!-- الخطوة 1 -->
-            <div class="form-step active">
-                <input type="text" name="name" placeholder="الاسم الكامل" required>
-                <input type="number" name="age" placeholder="العمر" required>
-                <input type="text" name="phone" placeholder="رقم الهاتف" required>
-                <input type="email" name="email" placeholder="البريد الإلكتروني" required>
-                <button type="button" class="btn next">التالي</button>
-            </div>
+<div class="form-container" id="formContainer" style="display:none;">
+    <!-- العنوان + الشعار -->
+    <h1 class="form-title">طلب توظيف - فوكس فلسطين</h1>
+    <img src="{{ url_for('static', filename='fox.jpg') }}" alt="شعار الشركة" class="logo">
 
-            <!-- الخطوة 2 -->
-            <div class="form-step">
-                <select name="job" required>
-                    <option value="">اختر الوظيفة المطلوبة</option>
-                    {% for j in jobs %}
-                    <option value="{{ j }}">{{ j }}</option>
-                    {% endfor %}
-                </select>
-                <input type="text" name="school" placeholder="المدرسة" required>
-                <input type="text" name="university" placeholder="الجامعة" required>
-                <input type="text" name="major" placeholder="التخصص" required>
-                <button type="button" class="btn prev">السابق</button>
-                <button type="button" class="btn next">التالي</button>
-            </div>
-
-            <!-- الخطوة 3 -->
-            <div class="form-step">
-                <select name="city" required>
-                    <option value="">اختر المدينة</option>
-                    {% for c in cities %}
-                    <option value="{{ c }}">{{ c }}</option>
-                    {% endfor %}
-                </select>
-                <input type="text" name="address" placeholder="عنوان السكن" required>
-                <textarea name="experience" placeholder="الخبرات" required></textarea>
-                <textarea name="references" placeholder="المعرفون"></textarea>
-                <button type="button" class="btn prev">السابق</button>
-                <button type="submit" class="btn submit">إرسال</button>
-            </div>
-        </form>
-        {% endif %}
+    {% if submitted == 'true' %}
+    <div class="success-popup">
+        <!-- <img src="{{ url_for('static', filename='fox.jpg') }}" class="logo-success"> -->
+        <h2>✅ تم إرسال طلبك بنجاح!</h2>
     </div>
+    {% else %}
+    <form id="multiStepForm" method="POST">
+        <div class="progressbar">
+            <div class="progress" id="progress"></div>
+            <div class="progress-step active" data-title="1">1</div>
+            <div class="progress-step" data-title="2">2</div>
+            <div class="progress-step" data-title="3">3</div>
+        </div>
+
+        <!-- الخطوة 1 -->
+        <div class="form-step active">
+            <input type="text" name="name" placeholder="الاسم الكامل" required>
+            <input type="number" name="age" placeholder="العمر" required>
+            <input type="text" name="phone" placeholder="رقم الهاتف" required>
+            <input type="email" name="email" placeholder="البريد الإلكتروني" required>
+            <button type="button" class="btn next">التالي</button>
+        </div>
+
+        <!-- الخطوة 2 -->
+        <div class="form-step">
+            <select name="job" required>
+                <option value="">اختر الوظيفة المطلوبة</option>
+                {% for j in jobs %}
+                <option value="{{ j }}">{{ j }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="school" placeholder="المدرسة" required>
+            <input type="text" name="university" placeholder="الجامعة" required>
+            <input type="text" name="major" placeholder="التخصص" required>
+            <button type="button" class="btn prev">السابق</button>
+            <button type="button" class="btn next">التالي</button>
+        </div>
+
+        <!-- الخطوة 3 -->
+        <div class="form-step">
+            <select name="city" required>
+                <option value="">اختر المدينة</option>
+                {% for c in cities %}
+                <option value="{{ c }}">{{ c }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="address" placeholder="عنوان السكن" required>
+            <textarea name="experience" placeholder="الخبرات" required></textarea>
+            <textarea name="references" placeholder="المعرفون"></textarea>
+            <button type="button" class="btn prev">السابق</button>
+            <button type="submit" class="btn submit">إرسال</button>
+        </div>
+    </form>
+    {% endif %}
+</div>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Loading Screen
+    setTimeout(() => {
+        document.getElementById("loadingScreen").style.display = "none";
+        const form = document.getElementById("formContainer");
+        form.style.display = "block";
+        form.classList.add("fade-in");
+    }, 1200); // مدة التحميل
+});
+
+// Multi-step form
 const prevBtns = document.querySelectorAll(".prev");
 const nextBtns = document.querySelectorAll(".next");
 const progress = document.getElementById("progress");
@@ -109,13 +127,17 @@ function updateFormSteps() {
 }
 
 function updateProgressbar() {
-    progressSteps.forEach((progressStep, index) => {
-        if (index <= formStepsNum) progressStep.classList.add("active");
-        else progressStep.classList.remove("active");
+    progressSteps.forEach((step, index) => {
+        step.classList.toggle("active", index <= formStepsNum);
     });
-    const activeSteps = document.querySelectorAll(".progress-step.active");
-    progress.style.width = ((activeSteps.length - 1) / (progressSteps.length - 1)) * 100 + "%";
+
+    // عدد الخطوات المكتملة (كل خطوة قبل الحالية)
+    let completedSteps = formStepsNum;
+    const totalSteps = progressSteps.length - 1;
+
+    progress.style.width = (completedSteps / totalSteps) * 100 + "%";
 }
+
 </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import gspread
 from google.oauth2.service_account import Credentials
 import os
@@ -59,7 +59,6 @@ cities_list = [
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    submitted = 'false'
     if request.method == 'POST':
         form_data = [
             request.form.get('name'),
@@ -80,15 +79,20 @@ def index():
             try:
                 sheet.append_row(form_data)
                 print("✅ أضيفت بيانات جديدة إلى Google Sheet:", form_data)
-                submitted = 'true'
             except Exception as e:
                 print("❌ خطأ أثناء append_row:")
                 traceback.print_exc()
         else:
             print("❌ لم يتم تهيئة sheet — راجع رسالة الإقلاع أعلاه.")
 
-    return render_template('jobs_formm.html', submitted=submitted, jobs=jobs_list, cities=cities_list)
+        # بعد الإرسال، إعادة التوجيه إلى صفحة Thank You لتجنب إعادة الإرسال عند Refresh
+        return redirect(url_for('thank_you'))
+
+    return render_template('jobs_formm.html', jobs=jobs_list, cities=cities_list)
+
+@app.route('/thank-you')
+def thank_you():
+    return render_template('thank_you.html')
 
 if __name__ == '__main__':
-    # host و port مضبوطين للـ Render
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)

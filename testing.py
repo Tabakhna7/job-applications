@@ -1,21 +1,43 @@
 from flask import Flask, render_template, request
 import gspread
 from google.oauth2.service_account import Credentials
-import json
-import traceback
 import os
+import traceback
+
 app = Flask(__name__)
 
-# Google Sheets باستخدام ملف JSON مباشرة
+# Google Sheets باستخدام Environment Variables
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
 
 try:
-    # قراءة ملف credentials.json
-    with open("credentials.json", "r") as f:
-        creds_info = json.load(f)
+    # التحقق من وجود كل environment variables
+    required_env_vars = [
+        "GOOGLE_TYPE",
+        "GOOGLE_PROJECT_ID",
+        "GOOGLE_PRIVATE_KEY",
+        "GOOGLE_CLIENT_EMAIL",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_X509_CERT_URL"
+    ]
+    for var in required_env_vars:
+        if not os.environ.get(var):
+            raise ValueError(f"Environment variable {var} غير موجود!")
+
+    creds_info = {
+        "type": os.environ.get("GOOGLE_TYPE"),
+        "project_id": os.environ.get("GOOGLE_PROJECT_ID"),
+        "private_key_id": os.environ.get("GOOGLE_PRIVATE_KEY_ID", ""),
+        "private_key": os.environ.get("GOOGLE_PRIVATE_KEY").replace('\\n', '\n'),
+        "client_email": os.environ.get("GOOGLE_CLIENT_EMAIL"),
+        "client_id": os.environ.get("GOOGLE_CLIENT_ID"),
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": os.environ.get("GOOGLE_CLIENT_X509_CERT_URL")
+    }
 
     creds = Credentials.from_service_account_info(creds_info, scopes=SCOPES)
     gc = gspread.authorize(creds)
@@ -28,11 +50,11 @@ except Exception as e:
     sheet = None
 
 # بيانات الوظائف والمدن
-jobs_list = ["مندوب مبيعات","مروج","عامل مخزن","كاش فان"]
+jobs_list = ["مندوب مبيعات", "مروج", "عامل مخزن", "كاش فان"]
 cities_list = [
-    "رام الله والبيرة","القدس","الخليل","بيت لحم",
-    "نابلس","جنين","طولكرم","قلقيلية","طوباس",
-    "سلفيت","أريحا"
+    "رام الله والبيرة", "القدس", "الخليل", "بيت لحم",
+    "نابلس", "جنين", "طولكرم", "قلقيلية", "طوباس",
+    "سلفيت", "أريحا"
 ]
 
 @app.route('/', methods=['GET', 'POST'])
@@ -68,4 +90,5 @@ def index():
     return render_template('jobs_formm.html', submitted=submitted, jobs=jobs_list, cities=cities_list)
 
 if __name__ == '__main__':
+    # host و port مضبوطين للـ Render
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)

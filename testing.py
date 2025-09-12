@@ -77,7 +77,7 @@ def index():
 
         if sheet:
             try:
-                sheet.append_row(form_data)
+                sheet.insert_row(form_data, 2)
                 print("✅ أضيفت بيانات جديدة إلى Google Sheet:", form_data)
             except Exception as e:
                 print("❌ خطأ أثناء append_row:")

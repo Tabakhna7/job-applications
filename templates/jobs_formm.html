@@ -5,14 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>طلب توظيف - فوكس فلسطين</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        #ageError {
-            color: red;
-            display: none;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-    </style>
 </head>
 <body>
 
@@ -45,8 +37,7 @@
             <input type="text" name="name" placeholder="الاسم الكامل" required>
             
             <div>
-                <input type="number" name="age" placeholder="العمر" required id="ageField">
-                <div id="ageError">⚠ يرجى إدخال العمر بالأرقام الإنجليزية فقط</div>
+                <input type="text" name="age" placeholder="العمر" required id="ageField" maxlength="2" pattern="[0-9٠-٩]{1,2}">
             </div>
             
             <input type="text" name="phone" placeholder="رقم الهاتف" required>
@@ -111,26 +102,10 @@ nextBtns.forEach(btn => {
         const currentStep = formSteps[formStepsNum];
         const requiredFields = currentStep.querySelectorAll("[required]");
         let allFilled = true;
-        let ageError = false;
 
         requiredFields.forEach(field => {
             if (!field.value.trim()) allFilled = false;
-
-            // تحقق خاص بالعمر
-            if (field.id === "ageField") {
-                if (/[٠-٩]/.test(field.value)) {
-                    ageError = true;
-                }
-            }
         });
-
-        if (ageError) {
-            document.getElementById("ageError").style.display = "block";
-            document.getElementById("ageField").focus();
-            return;
-        } else {
-            document.getElementById("ageError").style.display = "none";
-        }
 
         if(!allFilled) {
             alert("يرجى ملء جميع الحقول المطلوبة قبل الانتقال للخطوة التالية.");
@@ -166,17 +141,13 @@ function updateProgressbar() {
     progress.style.width = (completedSteps / totalSteps) * 100 + "%";
 }
 
-// ✅ تحقق عند الإرسال النهائي برضو
+// تحقق عند الإرسال النهائي
 document.getElementById("multiStepForm").addEventListener("submit", function(e) {
     let ageField = document.getElementById("ageField");
-    let errorMsg = document.getElementById("ageError");
-
-    if (/[٠-٩]/.test(ageField.value)) { 
-        e.preventDefault(); 
-        errorMsg.style.display = "block";
+    if (!/^[0-9٠-٩]{1,2}$/.test(ageField.value)) {
+        e.preventDefault();
+        alert("يرجى إدخال العمر بشكل صحيح (رقمين كحد أقصى).");
         ageField.focus();
-    } else {
-        errorMsg.style.display = "none";
     }
 });
 </script>

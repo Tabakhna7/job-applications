@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>طلب توظيف - فوكس فلسطين</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        #ageError {
+            color: red;
+            display: none;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 <body>
 
@@ -21,7 +29,6 @@
 
     {% if submitted == 'true' %}
     <div class="success-popup">
-        <!-- <img src="{{ url_for('static', filename='fox.jpg') }}" class="logo-success"> -->
         <h2>✅ تم إرسال طلبك بنجاح!</h2>
     </div>
     {% else %}
@@ -36,7 +43,12 @@
         <!-- الخطوة 1 -->
         <div class="form-step active">
             <input type="text" name="name" placeholder="الاسم الكامل" required>
-            <input type="number" name="age" placeholder="العمر" required>
+            
+            <div>
+                <input type="number" name="age" placeholder="العمر" required id="ageField">
+                <div id="ageError">⚠ يرجى إدخال العمر بالأرقام الإنجليزية فقط</div>
+            </div>
+            
             <input type="text" name="phone" placeholder="رقم الهاتف" required>
             <input type="email" name="email" placeholder="البريد الإلكتروني" required>
             <button type="button" class="btn next">التالي</button>
@@ -130,14 +142,24 @@ function updateProgressbar() {
     progressSteps.forEach((step, index) => {
         step.classList.toggle("active", index <= formStepsNum);
     });
-
-    // عدد الخطوات المكتملة (كل خطوة قبل الحالية)
     let completedSteps = formStepsNum;
     const totalSteps = progressSteps.length - 1;
-
     progress.style.width = (completedSteps / totalSteps) * 100 + "%";
 }
 
+// ✅ التحقق من حقل العمر
+document.getElementById("multiStepForm").addEventListener("submit", function(e) {
+    let ageField = document.getElementById("ageField");
+    let errorMsg = document.getElementById("ageError");
+
+    if (/[٠-٩]/.test(ageField.value)) { // إذا دخل أرقام عربية
+        e.preventDefault(); 
+        errorMsg.style.display = "block";
+        ageField.focus();
+    } else {
+        errorMsg.style.display = "none";
+    }
+});
 </script>
 </body>
 </html>

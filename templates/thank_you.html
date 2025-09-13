@@ -22,30 +22,34 @@
         }
 
         h1 { 
-            color: #28a745; 
+            color: #ffffff; 
             font-size: 2.7em; 
             margin-bottom: 20px; 
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
         }
 
         p { 
-            font-size: 1.8em; 
+            font-size: 1.6em; 
             margin-bottom: 30px; 
-            color: #f9f2f2;
+            color: #fdfdfd;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
         }
 
         a { 
             display: inline-block;
             padding: 16px 32px;
             font-size: 1.2em;
-            background-color: #007bff;
+            background: linear-gradient(135deg, #007bff, #6f42c1);
             color: #fff;
-            border-radius: 10px;
+            border-radius: 12px;
             text-decoration: none; 
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: background 0.3s ease, transform 0.2s ease;
         }
 
         a:hover { 
-            background-color: #0056b3; 
+            background: linear-gradient(135deg, #0056b3, #5a32a3);
             transform: scale(1.05);
         }
 
@@ -54,6 +58,8 @@
             height: auto;
             margin-bottom: 25px;
             animation: bounce 1.5s infinite;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
 
         @keyframes bounce {
@@ -64,10 +70,10 @@
 
         /* تحسين للموبايل */
         @media (max-width: 600px) {
-            h1 { font-size: 2em; }
+            h1 { font-size: 2.2em; }
             p { font-size: 1.2em; }
             a { padding: 14px 28px; font-size: 1.1em; }
-            .loading-img { width: 160px; margin-bottom: 20px; }
+            .loading-img { width: 150px; margin-bottom: 20px; }
         }
     </style>
 </head>
